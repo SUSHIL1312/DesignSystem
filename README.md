@@ -6,6 +6,60 @@ Each pattern is implemented as a standalone, ready-to-compile `.cpp` problem stu
 
 ---
 
+## Quick Memory Mapper (When to Use What)
+
+Use this quick mental cheat sheet to identify the right design pattern during interviews or system design rounds:
+
+### 1. Intent-to-Pattern Decision Matrix
+
+| Problem / Signal in Requirements | Recommended Pattern | Key Mechanism in C++ |
+|:---|:---|:---|
+| **Varying algorithms at runtime** (e.g. dynamic pricing, route calculators) | **[Strategy](behavioral/strategy/dynamic_pricing.cpp)** | `std::unique_ptr<IStrategy>` swapped via context setter |
+| **Object changes behavior as its internal state changes** (e.g. order lifecycle) | **[State](behavioral/state/order_lifecycle_state_machine.cpp)** | `IState` objects managing context transitions |
+| **One-to-many event notification** (e.g. collaborative doc edits, stock tickers) | **[Observer](behavioral/observer/realtime_collaborative_presence.cpp)** | Subscriber list with `subscribe()` / `broadcast()` |
+| **Sequential pipeline where any step can reject/short-circuit** (e.g. WAF, auth chain) | **[Chain of Responsibility](behavioral/chain_of_responsibility/api_rate_limit_security_waf.cpp)** | `next_` handler pointer with conditional forwarding |
+| **Stacking behaviors dynamically without subclass explosion** (e.g. API middleware) | **[Decorator](structural/decorator/api_gateway_pipeline.cpp)** | Recursive wrapping of `IComponent` via smart pointers |
+| **Integrating incompatible legacy or 3rd-party APIs** (e.g. old banking SOAP API) | **[Adapter](structural/adapter/legacy_banking_payment_adapter.cpp)** | Wrapper translating interface calls and data types |
+| **Simplifying a complex multi-service subsystem** (e.g. 1-click checkout) | **[Facade](structural/facade/one_click_checkout_facade.cpp)** | Single orchestrator class masking subsystem complexity |
+| **Treating individual items and nested trees uniformly** (e.g. file systems) | **[Composite](structural/composite/google_drive_filesystem.cpp)** | Common base where composites delegate to children |
+| **Lazy loading, access control, or caching for heavy objects** (e.g. doc media) | **[Proxy](structural/proxy/secure_document_cache_proxy.cpp)** | Same interface; intercepts calls to instantiate/guard real subject |
+| **Decoupling abstraction from platform implementation** (e.g. video player UI vs GPU) | **[Bridge](structural/bridge/cross_platform_video_player.cpp)** | Abstraction holds `std::unique_ptr<IImplementor>` bridge |
+| **Memory explosion from millions of small objects** (e.g. map tree markers) | **[Flyweight](structural/flyweight/geospatial_tile_renderer.cpp)** | Factory caching immutable intrinsic state via `std::shared_ptr` |
+| **Virtual constructor / Open-Closed instantiation** (e.g. notification channels) | **[Factory Method](creational/factory_method/notification_dispatcher.cpp)** | Derived creators override `createProduct()` |
+| **Complex object with many optional parameters & validation** (e.g. SQL query) | **[Builder](creational/builder/distributed_query_builder.cpp)** | Method chaining (`.where().limit()`) producing immutable product |
+| **Exactly one shared instance with thread-safe access** (e.g. metrics registry) | **[Singleton](creational/singleton/threadsafe_telemetry_registry.cpp)** | Meyers' Singleton (`static T instance;`) + deleted copy/move |
+| **Families of coordinated, compatible products** (e.g. multi-cloud stacks) | **[Abstract Factory](creational/abstract_factory/cloud_infrastructure_provisioner.cpp)** | Factory interface producing compatible product suites |
+| **Encapsulating requests to support history & rollback** (e.g. cloud ops deployment) | **[Command](behavioral/command/cloud_ops_rollback_engine.cpp)** | Command objects with `execute()` and `undo()` methods |
+| **Fixed algorithm skeleton with customizable steps** (e.g. ETL ingestion) | **[Template Method](behavioral/template_method/datalake_etl_ingestion.cpp)** | Public non-virtual template method + protected virtual hooks |
+| **Traversing complex structures without exposing internals** (e.g. graph BFS) | **[Iterator](behavioral/iterator/social_graph_bfs_iterator.cpp)** | `hasNext()` / `next()` encapsulating traversal state and cycles |
+| **Expensive object creation via snapshot copying** (e.g. microVM sandboxes) | **[Prototype](creational/prototype/lambda_sandbox_cloner.cpp)** | Polymorphic `clone()` returning deep-copied `std::unique_ptr` |
+| **Complex $O(N^2)$ communication mesh among components** (e.g. video chat room) | **[Mediator](behavioral/mediator/video_conferencing_mediator.cpp)** | Colleagues reference only central mediator; zero peer coupling |
+
+---
+
+### 2. Disambiguation Cheat Sheet (Common Confusions)
+
+- **Strategy vs State**:
+  - *Strategy*: Client explicitly injects the algorithm from the outside. Algorithms are typically independent and stateless.
+  - *State*: State changes occur internally based on lifecycle events. State objects often initiate transitions to sibling states.
+- **Decorator vs Chain of Responsibility vs Proxy**:
+  - *Decorator*: Augments behavior before/after delegation without breaking the call chain; layers can be stacked arbitrarily.
+  - *Chain of Responsibility*: Sequential filter pipeline where any node can decide to terminate/short-circuit the request.
+  - *Proxy*: Controls access (lazy initialization, permission gating, caching) to a single underlying object rather than adding layers of new behavior.
+- **Factory Method vs Abstract Factory vs Builder**:
+  - *Factory Method*: A single method creating one product; delegates creation to derived creators.
+  - *Abstract Factory*: An interface with multiple factory methods creating an entire family of coordinated products.
+  - *Builder*: Focuses on constructing a single complex, step-by-step object with validation and immutability.
+- **Adapter vs Facade vs Bridge**:
+  - *Adapter*: Retrospective wrapper making two existing, incompatible interfaces work together.
+  - *Facade*: Higher-level entry door simplifying a multi-class subsystem; does not define a new abstraction.
+  - *Bridge*: Designed upfront to separate an abstraction hierarchy from its implementation backend so both vary independently.
+- **Observer vs Mediator**:
+  - *Observer*: One-to-many unidirectional broadcast (publisher emits events without knowing subscriber internals).
+  - *Mediator*: Many-to-many bidirectional coordinator (peers route all communication through the mediator to avoid direct dependencies).
+
+---
+
 ## Recommended Learning Roadmap
 
 If you are preparing for machine coding or system design interviews, tackle the patterns in this order to build your mental models incrementally:
