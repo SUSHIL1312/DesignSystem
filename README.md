@@ -187,3 +187,10 @@ When implementing and reviewing solutions, focus on:
    - String views (`std::string_view`) for read-only string parameters.
 3. **Thread Safety**: Mutex protection on shared state and avoiding race conditions under concurrent access.
 4. **Resilience**: Proper error handling (exceptions vs structured return values) and validation of edge cases.
+
+---
+
+## Additional Practice & References
+For further practice on interview-asked Low-Level Design (LLD) and High-Level Design (HLD) questions, you can refer to:
+- [System Design Mastery](https://systemdesignmastry.com/) - Practice real-world HLD & LLD interview questions.
+

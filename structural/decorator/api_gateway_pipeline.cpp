@@ -7,6 +7,9 @@
  *   in any order at runtime without class hierarchy explosion.
  * - Allow middleware to short-circuit requests (e.g. 401 on failed auth, 429 on rate limit).
  * - Safe memory management and clean ownership using smart pointers.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

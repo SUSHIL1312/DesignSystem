@@ -6,6 +6,9 @@
  * - Coordinate inventory reservation, tax calculation, payment billing, and shipping.
  * - Short-circuit on failure (e.g. out of stock, payment declined) and return descriptive status.
  * - Subsystems remain decoupled and accessible for advanced fulfillment workflows.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

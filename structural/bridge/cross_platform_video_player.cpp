@@ -6,6 +6,9 @@
  *   from the platform rendering backend hierarchy (MetalRendererBackend, VulkanRendererBackend).
  * - Abstraction holds a pointer to IRendererBackend and delegates graphics operations.
  * - Allow player features and platform backends to vary independently.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

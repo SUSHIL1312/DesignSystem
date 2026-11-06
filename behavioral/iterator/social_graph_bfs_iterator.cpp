@@ -6,6 +6,9 @@
  * - Traverse graph connections level-by-level (Breadth-First Search) up to maxDepth hops.
  * - Handle cycles correctly without duplicate visits or infinite loops.
  * - Graph internal storage (adjacency list, visited set) remains private.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

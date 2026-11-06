@@ -6,6 +6,9 @@
  *   (GPS latitude, longitude, label).
  * - LandmarkTypeFactory caches and dispenses shared LandmarkType flyweights.
  * - Map markers store a reference/pointer to the shared flyweight to minimize memory consumption.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

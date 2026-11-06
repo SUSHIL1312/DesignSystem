@@ -6,6 +6,9 @@
  *   implementing ICloudCommand (execute and undo).
  * - Invoker (DeploymentPipeline) maintains an execution history stack.
  * - Support rolling back commands in reverse order if a deployment step fails.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

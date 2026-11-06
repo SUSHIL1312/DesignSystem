@@ -6,6 +6,9 @@
  * - Recursive storage calculation (getSizeInBytes) aggregating total bytes across arbitrarily
  *   nested folder hierarchies.
  * - Safety check: invoking composite operations (add, remove) on leaf nodes must throw std::logic_error.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

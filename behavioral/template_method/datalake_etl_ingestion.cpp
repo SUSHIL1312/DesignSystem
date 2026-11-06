@@ -6,6 +6,9 @@
  * - Sequence: connect -> extract -> validate -> deduplicate -> transform -> load -> audit.
  * - Format-specific steps (extract, validate, transform, load) implemented by subclasses.
  * - Shared steps (deduplication, audit hook) handled uniformly by base class.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

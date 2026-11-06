@@ -9,6 +9,9 @@
  *   - Loyalty/Prime: waived base fare, discounted distance, waived time for <= 5 km.
  * - Support runtime hot-swapping of pricing strategies on the calculation context.
  * - Validate ride parameters (throw std::invalid_argument on negative values).
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

@@ -8,6 +8,9 @@
  *   - RateLimitFilter: checks requests per second against threshold.
  *   - SqlInjectionFilter: inspects payload for SQL injection signatures.
  * - Early termination (short-circuit) on violation; forward to next filter on success.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

@@ -9,6 +9,9 @@
  * - Prevent mixing resources across cloud providers (e.g. attaching AWS storage to GCP compute).
  * - Allow orchestrator to deploy a full stack without depending on vendor-specific concrete classes.
  * - Support adding new cloud providers (e.g. Azure) without modifying existing code.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

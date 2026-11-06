@@ -7,6 +7,9 @@
  *   must never affect the original prototype or other clones.
  * - Virtual clone method returning std::unique_ptr<ExecutionSandbox>.
  * - Prototype registry to manage and dispense sandboxes by runtime type.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

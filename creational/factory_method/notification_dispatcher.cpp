@@ -10,6 +10,9 @@
  * - Support runtime registration of new channels (e.g. Slack webhook) without altering
  *   existing channel or dispatcher code (Open-Closed Principle).
  * - Ensure thread-safe channel registration and message dispatching.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

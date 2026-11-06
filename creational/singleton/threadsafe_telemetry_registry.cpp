@@ -7,6 +7,9 @@
  * - Explicitly deleted copy and move constructors and assignment operators.
  * - Thread-safe counter updates and lookups under concurrent access.
  * - Reset method for isolated unit testing.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

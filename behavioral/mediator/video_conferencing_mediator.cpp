@@ -8,6 +8,9 @@
  * - Enforce coordination invariants:
  *   - Mutually exclusive screen sharing (one presenter at a time).
  *   - Broadcast recording alerts to all active participants when recording starts.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

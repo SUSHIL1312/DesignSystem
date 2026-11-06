@@ -7,6 +7,9 @@
  * - Invariant: building a query without a target table (from) must throw std::logic_error.
  * - The built SqlQuery product must be immutable once created.
  * - Include director methods for generating standard pre-configured query templates.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

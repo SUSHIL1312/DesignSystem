@@ -6,6 +6,9 @@
  * - Decouple document event generation from listeners (UI cursor renderers, audit logs).
  * - Support dynamic subscription and unsubscription of listeners.
  * - Thread-safe listener registration and event broadcasting.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

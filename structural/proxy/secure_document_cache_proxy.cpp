@@ -6,6 +6,9 @@
  * - Virtual proxy: defer expensive disk/network loading of heavy asset until first getContent() call.
  * - Protection proxy: verify user permissions and throw std::runtime_error on unauthorized access.
  * - Caching proxy: avoid redundant disk loads on subsequent reads.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>

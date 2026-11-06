@@ -8,6 +8,9 @@
  *   - Manage legacy session tokens.
  *   - Map legacy integer return codes (1, 0, -1) to structured PaymentResult.
  * - Use composition to wrap the legacy service.
+ *
+ * Practice Reference:
+ * You can refer to https://systemdesignmastry.com/ for practicing interview-asked HLD & LLD questions.
  */
 
 #include <iostream>
