@@ -1,44 +1,15 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon Multi-Channel Notification Dispatcher (Amazon SNS / Pinpoint Engine)
- * Category: Creational Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * At Amazon scale, core microservices (Order Fulfillment, CloudWatch Alarms, Prime Delivery)
- * emit billions of notifications daily. Each notification must be routed through specific
- * transport channels depending on customer preferences and message urgency:
- *   1. Email (AWS SES): Formats HTML/Plaintext, validates RFC 5322 emails, handles DKIM signing.
- *   2. SMS (AWS Pinpoint): Validates E.164 phone numbers, enforces 160-char SMS segmenting.
- *   3. Push (FCM/APNs): Validates hex/base64 device tokens, constructs platform-specific payloads.
- * 
- * The platform dispatch pipeline must operate agnostically: it handles rate-limiting, retries,
- * and delivery audits, but must NEVER know the concrete instantiation details, protocol
- * handshakes, or endpoint configs of individual channels.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Single Responsibility Principle (SRP):
- *    - Separation between channel payload formatting/transmission and channel creation.
- * 2. Open-Closed Principle (OCP):
- *    - Adding a brand-new notification channel (e.g., Slack Webhook, WhatsApp) must require
- *      ZERO changes to existing channel classes or core dispatcher logic.
- *    - Must support runtime or compile-time registration of new creators.
- * 3. Modern C++ Memory & Ownership:
- *    - Clean ownership semantics (`std::unique_ptr`, `std::string_view` where appropriate).
- *    - Virtual destructors on polymorphic bases; Rule of 5 adherence.
- * 4. Resilient Error Handling:
- *    - Malformed recipient/payload must return a failed `DeliveryResult` with diagnostic info,
- *      not crash or throw unhandled exceptions.
- * 5. Thread-Safety:
- *    - Multiple worker threads dispatching notifications concurrently must not cause race conditions.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * Instead of letting your client code or a monolithic factory switch over an enum (`switch (type)`),
- * invert the creation dependency. Define an interface for the product, and an abstract creation
- * contract where derived creators decide which concrete product to instantiate.
- * How can you make this open for registration so adding a 4th or 5th channel requires NO edits to existing files?
- * ==============================================================================================
+/*
+ * Multi-Channel Notification Dispatcher
+ *
+ * Requirements:
+ * - Route notifications across delivery channels:
+ *   - Email (SES): validates email address format, sets "EMAIL-" messageId prefix.
+ *   - SMS (Pinpoint): validates E.164 phone numbers, checks length, sets "SMS-" prefix.
+ *   - Push (FCM/APNs): validates device token length (min 16 chars), sets "PUSH-" prefix.
+ * - Decouple channel instantiation from the core dispatcher service using factory methods.
+ * - Support runtime registration of new channels (e.g. Slack webhook) without altering
+ *   existing channel or dispatcher code (Open-Closed Principle).
+ * - Ensure thread-safe channel registration and message dispatching.
  */
 
 #include <iostream>
@@ -227,7 +198,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Notification Dispatcher Test Suite <<<\n\n";
+    std::cout << "Running notification dispatcher tests...\n\n";
 
     NotificationService service;
 
@@ -370,6 +341,6 @@ int main() {
         std::cout << "PASSED (" << (numThreads * msgsPerThread) << " concurrent dispatches clean)\n";
     }
 
-    std::cout << "\n🎉 ALL NOTIFICATION DISPATCHER TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll notification dispatcher tests passed.\n";
     return 0;
 }

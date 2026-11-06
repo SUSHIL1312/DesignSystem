@@ -1,39 +1,15 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon E-Commerce Order Lifecycle State Machine
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * At Amazon, customer orders progress through a finite state machine:
- *   [Created] ---> [Paid] ---> [Shipped] ---> [Delivered]
- *       |             |
- *       v             v
- *   [Cancelled]   [Cancelled (Refunded)]
- * 
- * Invariants & Business Rules:
- *   1. An order in `Created` can be paid or cancelled. It CANNOT be shipped or delivered.
- *   2. An order in `Paid` can be shipped or cancelled (triggering refund). It cannot be paid again.
- *   3. Once an order enters `Shipped`, it CANNOT be cancelled (must follow return flow once delivered).
- *   4. `Delivered` and `Cancelled` are terminal states; no further transitions are valid.
- * 
- * Implementing this with massive nested `switch(currentState) { switch(action) { ... } }` blocks
- * is fragile, prone to invalid state jumps, and fails L5/L6 system design bar.
- * 
- * The system must encapsulate state-specific behavior in dedicated state objects, allowing
- * the `OrderContext` to change its behavior when its internal state changes.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. State Encapsulation:
- *    - `IOrderState` defines transitions: `pay()`, `ship()`, `deliver()`, `cancel()`.
- *    - Invalid transitions must throw `std::logic_error` or return false with a clear explanation.
- * 2. Modern C++ State Transition:
- *    - Clean ownership transfer of state objects into `OrderContext` (e.g. `std::unique_ptr<IOrderState>`).
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can an object alter its behavior when its internal state changes, appearing to change its class?
- * ==============================================================================================
+/*
+ * Order Lifecycle State Machine
+ *
+ * Requirements:
+ * - Encapsulate state-dependent behavior in dedicated IOrderState implementations
+ *   (Created, Paid, Shipped, Delivered, Cancelled).
+ * - Enforce valid transitions:
+ *   - Created -> Paid or Cancelled.
+ *   - Paid -> Shipped or Cancelled.
+ *   - Shipped -> Delivered (cancellation disallowed).
+ *   - Delivered / Cancelled -> terminal states.
+ * - Disallowed actions must throw std::logic_error.
  */
 
 #include <iostream>
@@ -190,7 +166,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Order Lifecycle State Machine Test Suite <<<\n\n";
+    std::cout << "Running order lifecycle state machine tests...\n\n";
 
     // Test Case 1: Happy Path (Created -> Paid -> Shipped -> Delivered)
     {
@@ -244,6 +220,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL STATE TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll order lifecycle state machine tests passed.\n";
     return 0;
 }

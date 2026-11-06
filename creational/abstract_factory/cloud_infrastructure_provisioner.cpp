@@ -1,48 +1,14 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Cloud Multi-Cloud Infrastructure Provisioner (Anthos / Terraform Engine)
- * Category: Creational Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * Google Cloud Anthos / Terraform Core enables enterprise clients to provision complete,
- * compatible infrastructure stacks across heterogeneous cloud environments (AWS, GCP, Azure).
- * 
- * Each cloud provider supplies a distinct family of co-dependent resources:
- *   1. Compute:
- *      - AWS: EC2Instance (supports Nitro enclave, specific IAM instance profile)
- *      - GCP: ComputeEngineInstance (supports Shielded VM, GCP service accounts)
- *   2. Storage:
- *      - AWS: EBSVolume (IOPS provisioning, EBS encryption keys)
- *      - GCP: PersistentDiskVolume (regional replication, Google customer-managed keys)
- *   3. Networking:
- *      - AWS: VpcInternetGateway (CIDR block routing, route tables)
- *      - GCP: CloudRouterGateway (BGP routing, VPC peering)
- * 
- * Mixing incompatible products (e.g. attempting to attach an AWS EBS Volume to a GCP Compute Engine instance)
- * causes catastrophic runtime infrastructure failures. The system must enforce that an entire family
- * of interrelated cloud resources is produced together without the orchestration engine knowing
- * the concrete vendor classes.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Family Consistency & Type Safety:
- *    - The orchestrator (`CloudDeploymentManager`) must provision Compute, Storage, and Networking
- *      without coupling to concrete cloud vendors.
- *    - Incompatible resources from different clouds must never be mixed.
- * 2. Open-Closed Principle (OCP):
- *    - Adding support for a new cloud provider (e.g., Azure with AzureVM, BlobStorage, VNetGateway)
- *      must require zero changes to existing vendor code or the deployment manager.
- * 3. Modern C++ Idioms:
- *    - Ownership transferred via `std::unique_ptr`.
- *    - Pure virtual interfaces with virtual destructors.
- *    - Const-correct getters.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you provide an interface for creating families of related or dependent objects
- * without specifying their concrete classes? How does this guarantee that products from one family
- * are never accidentally mixed with products from another?
- * ==============================================================================================
+/*
+ * Multi-Cloud Infrastructure Provisioner
+ *
+ * Requirements:
+ * - Provision complete, compatible families of cloud resources:
+ *   - Compute instance (EC2Instance / ComputeEngineInstance)
+ *   - Storage volume (EBSVolume / PersistentDiskVolume)
+ *   - Network gateway (VpcInternetGateway / CloudRouterGateway)
+ * - Prevent mixing resources across cloud providers (e.g. attaching AWS storage to GCP compute).
+ * - Allow orchestrator to deploy a full stack without depending on vendor-specific concrete classes.
+ * - Support adding new cloud providers (e.g. Azure) without modifying existing code.
  */
 
 #include <iostream>
@@ -226,7 +192,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Multi-Cloud Infrastructure Provisioner Test Suite <<<\n\n";
+    std::cout << "Running multi-cloud infrastructure provisioner tests...\n\n";
 
     // Test Case 1: Deploy Full AWS Stack
     {
@@ -312,6 +278,6 @@ int main() {
         std::cout << "PASSED (Azure extension deployed without touching core code)\n";
     }
 
-    std::cout << "\n🎉 ALL ABSTRACT FACTORY TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll multi-cloud infrastructure provisioner tests passed.\n";
     return 0;
 }

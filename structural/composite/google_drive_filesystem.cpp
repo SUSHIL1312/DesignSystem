@@ -1,38 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Drive Hierarchical Storage & Permissions Tree
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * Google Drive organizes petabytes of user data across complex hierarchies: individual files,
- * nested directories, and shortcut references.
- * 
- * Core platform operations must operate UNIFORMLY across individual items and entire folder trees:
- *   1. Storage Quota Calculation:
- *      - An individual file consumes its raw byte length.
- *      - A folder consumes the recursive aggregate sum of all contained files, sub-folders,
- *        and child structures.
- *   2. Unified Tree Navigation:
- *      - The client (e.g., Storage Scanner, Backup Exporter) must not need to distinguish between
- *        leaf files and branch folders when querying storage size or printing hierarchy trees.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Uniform Interface (`IFileSystemNode`):
- *    - Both leaves (Files) and composites (Directories) implement the same interface.
- * 2. Recursive Aggregation:
- *    - `getSizeInBytes()` must compute deep aggregate totals across arbitrarily deep tree structures.
- * 3. Modern C++ Memory Management:
- *    - Manage child nodes cleanly using `std::shared_ptr<IFileSystemNode>` or `std::unique_ptr<IFileSystemNode>`.
- * 4. Safety & Invariant Checks:
- *    - Calling `.add()` or `.remove()` on a leaf `File` should either throw `std::logic_error`
- *      or fail gracefully (Composite safety vs. transparency trade-off).
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you compose objects into tree structures to represent part-whole hierarchies,
- * letting clients treat individual objects and compositions of objects uniformly?
- * ==============================================================================================
+/*
+ * Hierarchical Storage Tree (Files & Folders)
+ *
+ * Requirements:
+ * - Unified IFileSystemNode interface for files (leaves) and folders (composites).
+ * - Recursive storage calculation (getSizeInBytes) aggregating total bytes across arbitrarily
+ *   nested folder hierarchies.
+ * - Safety check: invoking composite operations (add, remove) on leaf nodes must throw std::logic_error.
  */
 
 #include <iostream>
@@ -127,7 +100,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Google Drive Filesystem (Composite) Test Suite <<<\n\n";
+    std::cout << "Running filesystem composite tests...\n\n";
 
     // Test Case 1: Individual Leaf File Size
     {
@@ -192,6 +165,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL COMPOSITE TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll filesystem composite tests passed.\n";
     return 0;
 }

@@ -1,52 +1,14 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Uber / Amazon Dynamic Surge Pricing & Delivery Cost Optimizer
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * At Uber / Amazon Logistics, delivery and ride pricing is dynamically evaluated based on
- * live traffic, weather, supply-demand imbalance, and user subscription tiers.
- * 
- * Business Requirements:
- *   1. Standard Pricing Strategy:
- *      - Base fare: $3.00
- *      - Per km: $1.50
- *      - Per minute: $0.25
- *   2. Surge Pricing Strategy (Peak Rush / Heavy Rain):
- *      - Standard fare multiplied by surge factor (e.g., 1.5x, 2.0x).
- *      - Regulatory safety constraint: Surge factor capped at 2.5x max, floored at 1.0x.
- *   3. Prime Loyalty / VIP Strategy:
- *      - Base fare waived ($0.00).
- *      - Discounted distance rate: $1.10 per km.
- *      - Normal time rate: $0.25 per minute.
- *      - If distance <= 5 km, time charge is also waived entirely.
- * 
- * The pricing engine in the Checkout microservice must allow algorithms to be selected,
- * swapped, or configured at runtime (e.g., a sudden downpour triggers surge pricing; a user applies
- * a Prime membership at checkout). Hardcoding `if-else` or `switch (pricingMode)` inside the
- * order service violates the Open-Closed Principle and fails L5/L6 bar.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Open-Closed Principle (OCP):
- *    - New pricing algorithms (e.g., Black Friday Flash Sale, EV Green Fleet discount) must be
- *      introducible without modifying existing strategies or the context engine.
- * 2. Dynamic Runtime Swapping:
- *    - The pricing context must support hot-swapping its active calculation strategy at runtime.
- * 3. Modern C++ Design:
- *    - Ownership managed via `std::unique_ptr<IPricingStrategy>`.
- *    - Const-correctness on inspection methods (`calculateFare(const RideDetails&)`).
- * 4. Resilient Validation:
- *    - Invalid ride parameters (negative distance, negative duration) must throw `std::invalid_argument`.
- * 5. Deterministic Floating Point / Currency Handling:
- *    - Fares rounded to 2 decimal places or calculated with high precision doubles.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you encapsulate a family of algorithms behind a polymorphic interface such that
- * the algorithm can vary completely independently from the client using it?
- * What mechanism allows you to change the behavior of the calculation context at runtime?
- * ==============================================================================================
+/*
+ * Dynamic Fare Calculation & Pricing Engine
+ *
+ * Requirements:
+ * - Encapsulate pricing algorithms behind an IPricingStrategy interface.
+ * - Concrete strategies:
+ *   - Standard: base fare + distance rate + time rate.
+ *   - Surge: standard fare multiplied by surge factor (clamped between 1.0 and 2.5).
+ *   - Loyalty/Prime: waived base fare, discounted distance, waived time for <= 5 km.
+ * - Support runtime hot-swapping of pricing strategies on the calculation context.
+ * - Validate ride parameters (throw std::invalid_argument on negative values).
  */
 
 #include <iostream>
@@ -187,7 +149,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Dynamic Surge Pricing Test Suite <<<\n\n";
+    std::cout << "Running dynamic pricing strategy tests...\n\n";
 
     auto roundTwoDecimals = [](double val) {
         return std::round(val * 100.0) / 100.0;
@@ -318,6 +280,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL DYNAMIC PRICING STRATEGY TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll dynamic pricing strategy tests passed.\n";
     return 0;
 }

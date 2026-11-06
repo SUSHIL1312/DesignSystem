@@ -1,43 +1,13 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon 3rd-Party Payment Unification Gateway (Legacy Banking Adapter)
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * Amazon Payments processes transactions across hundreds of acquiring banks globally.
- * The core checkout pipeline requires all payment integrations to adhere to a clean,
- * modern internal contract: `IPaymentGateway`.
- * 
- * However, several international legacy banking partners still run 15-year-old SOAP/XML services:
- *   - Legacy Service (`LegacySoapBankService`):
- *     - Takes amounts in integer CENTS (e.g., $10.50 -> 1050 cents).
- *     - Requires a separate session handshake to generate a 32-bit transaction token before authorizing.
- *     - Returns integer status codes: 1 = SUCCESS, 0 = INSUFFICIENT_FUNDS, -1 = FRAUD_REJECTED.
- *   - Amazon Modern Pipeline:
- *     - Expects amounts in decimal dollars (`double amountDollars`).
- *     - Requires ISO currency codes ("USD", "EUR").
- *     - Expects a structured `PaymentResult` with boolean `success`, `transactionReference`, and error descriptions.
- * 
- * We cannot rewrite the 3rd-party banking library, nor will we corrupt the Amazon core checkout
- * engine with bank-specific translation hacks.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Interface Uniformity:
- *    - The adapter must implement `IPaymentGateway`.
- * 2. Protocol & Data Translation:
- *    - Convert dollars to integer cents safely (handling floating point rounding).
- *    - Handle legacy token handshakes internally.
- *    - Map legacy return codes (-1, 0, 1) to `PaymentResult`.
- * 3. Composition over Inheritance:
- *    - Adapt the legacy service via object composition (holding a reference or `std::unique_ptr`
- *      to `LegacySoapBankService`).
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you convert the interface of a legacy class into another interface clients expect,
- * letting classes work together that couldn't otherwise because of incompatible interfaces?
- * ==============================================================================================
+/*
+ * Payment Gateway Adapter for Legacy Banking Service
+ *
+ * Requirements:
+ * - Adapt legacy banking API (LegacySoapBankService) to modern IPaymentGateway interface.
+ * - Protocol & data translation:
+ *   - Convert dollars to integer cents.
+ *   - Manage legacy session tokens.
+ *   - Map legacy integer return codes (1, 0, -1) to structured PaymentResult.
+ * - Use composition to wrap the legacy service.
  */
 
 #include <iostream>
@@ -125,7 +95,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Legacy Banking Payment Adapter Test Suite <<<\n\n";
+    std::cout << "Running legacy banking payment adapter tests...\n\n";
 
     auto legacyBank = std::make_unique<LegacySoapBankService>();
     std::unique_ptr<IPaymentGateway> paymentGateway = 
@@ -178,6 +148,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL ADAPTER TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll legacy banking payment adapter tests passed.\n";
     return 0;
 }

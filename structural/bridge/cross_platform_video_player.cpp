@@ -1,40 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: YouTube Cross-Platform Video Player Engine (Decoupling UI & Graphics)
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * The YouTube client runs across Smart TVs, Android, iOS, Windows, and macOS.
- * The architecture faces two independent axes of change:
- *   1. Feature Abstraction Axis:
- *      - `StandardPlayer`: Handles play/pause, buffer management, 1080p stream switching.
- *      - `AccessibilityPlayer`: Adds text-to-speech description and closed caption overlay rendering.
- *   2. Platform Hardware Rendering Axis:
- *      - Apple (iOS/macOS): Apple Metal API (`MetalRendererBackend`)
- *      - Windows: Microsoft DirectX 12 (`DirectXRendererBackend`)
- *      - Android/Linux: Khronos Vulkan (`VulkanRendererBackend`)
- * 
- * If combined through classic subclassing:
- *   `MetalStandardPlayer`, `DirectXStandardPlayer`, `MetalAccessibilityPlayer`, `DirectXAccessibilityPlayer`...
- * Every new player capability multiplied by every platform backend yields an $M \times N$ class explosion.
- * 
- * The system must bridge the high-level player abstraction with the low-level rendering backend,
- * letting both hierarchies vary independently.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Orthogonal Extension:
- *    - New player abstractions (e.g. `LiveStreamInteractivePlayer`) can be added without modifying backends.
- *    - New rendering backends (e.g. `WebGLRenderer`) can be added without modifying player abstractions.
- * 2. Bridge Composition:
- *    - The abstraction holds a `std::unique_ptr<IRendererBackend>` bridge reference.
- * 3. Modern C++:
- *    - Clean ownership, pure virtual contracts, no raw pointers.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you decouple an abstraction from its implementation so that the two can vary independently?
- * ==============================================================================================
+/*
+ * Cross-Platform Video Player Engine
+ *
+ * Requirements:
+ * - Decouple the player feature abstraction hierarchy (StandardVideoPlayer, AccessibilityVideoPlayer)
+ *   from the platform rendering backend hierarchy (MetalRendererBackend, VulkanRendererBackend).
+ * - Abstraction holds a pointer to IRendererBackend and delegates graphics operations.
+ * - Allow player features and platform backends to vary independently.
  */
 
 #include <iostream>
@@ -124,7 +95,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running YouTube Player (Bridge) Test Suite <<<\n\n";
+    std::cout << "Running cross-platform video player tests...\n\n";
 
     // Test Case 1: Standard Player with Metal backend (iOS)
     {
@@ -166,6 +137,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL BRIDGE TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll cross-platform video player tests passed.\n";
     return 0;
 }

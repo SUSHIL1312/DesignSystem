@@ -1,36 +1,12 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google BigQuery / AWS Athena Distributed Query Construction Engine
- * Category: Creational Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * Google BigQuery / AWS Athena allows analytical engineers to query petabyte-scale datasets.
- * Constructing a distributed SQL query programmatically is error-prone:
- *   - Queries have numerous optional components: Projections (`SELECT`), Target (`FROM`),
- *     Partition Filters (`WHERE`), Aggregations (`GROUP BY`), Sorting (`ORDER BY`),
- *     Pagination (`LIMIT`, `OFFSET`), and Execution Timeout limits.
- *   - A telescoping constructor with 10 arguments creates unmaintainable, unreadable code.
- *   - The final `SqlQuery` object must be completely immutable once constructed to prevent
- *     data-race mutations across worker nodes.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Step-by-Step Fluent Construction:
- *    - Fluent API enabling method chaining (`.select(...).from(...).where(...).build()`).
- * 2. Invariant Enforcement & Validation:
- *    - A query without a `FROM` target table is invalid; calling `.build()` must throw `std::logic_error`.
- *    - `LIMIT` must be non-negative.
- * 3. Immutability:
- *    - The resulting `SqlQuery` must be immutable (all getters `const`, state read-only).
- * 4. Separation of Construction from Representation:
- *    - The builder constructs the AST/representation; optional Director can orchestrate
- *      common standard reports (e.g. AuditLogQuery, RevenueSummaryQuery).
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you separate the complex construction of an object from its final representation,
- * allowing the same construction process to produce diverse configurations step-by-step?
- * ==============================================================================================
+/*
+ * Distributed SQL Query Builder
+ *
+ * Requirements:
+ * - Provide a fluent API for constructing analytical SQL queries step-by-step
+ *   (select, from, where, groupBy, orderBy, limit, timeout).
+ * - Invariant: building a query without a target table (from) must throw std::logic_error.
+ * - The built SqlQuery product must be immutable once created.
+ * - Include director methods for generating standard pre-configured query templates.
  */
 
 #include <iostream>
@@ -169,7 +145,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Distributed Query Builder Test Suite <<<\n\n";
+    std::cout << "Running distributed query builder tests...\n\n";
 
     // Test Case 1: Standard Fluent Query Construction
     {
@@ -229,6 +205,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL BUILDER TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll distributed query builder tests passed.\n";
     return 0;
 }

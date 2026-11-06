@@ -1,44 +1,12 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon API Gateway Request/Response Transformation Pipeline
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * Amazon API Gateway / Cloudflare Edge processes millions of incoming HTTP requests per second
- * before routing them to internal microservices (AWS Lambda, ECS, DynamoDB).
- * Every API endpoint may require a dynamic, customizable set of pre- and post-processing steps:
- *   1. Core Routing: Resolves endpoint and produces raw JSON response.
- *   2. Authentication Middleware: Validates Bearer JWT tokens in "Authorization" header; returns 401 if invalid.
- *   3. Rate Limiting Middleware: Enforces per-client IP token-bucket quotas; returns 429 if exceeded.
- *   4. Observability Middleware: Generates a unique "X-Trace-Id", measures execution latency,
- *      and injects "X-Response-Time-Ms" header into the response.
- * 
- * Creating static subclasses for every combination:
- *   (e.g., AuthHandler, AuthAndRateLimitedHandler, LoggingAuthAndRateLimitedHandler...)
- * leads to a combinatorial explosion ($2^N$ classes) and violates DRY & OCP.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Single Interface Uniformity:
- *    - All decorators and core handlers must conform to the same `IHttpHandler` contract.
- *    - Callers should not know whether they are invoking a bare handler or a deeply nested pipeline.
- * 2. Dynamic Runtime Composition:
- *    - Middlewares can be chained and layered in ANY order at runtime.
- *    - A decorator can short-circuit the request (e.g., auth failure returns 401 immediately
- *      without delegating down to the inner handler).
- * 3. Modern C++ Memory Management:
- *    - Manage wrapped component ownership safely (e.g. `std::unique_ptr` or `std::shared_ptr`).
- *    - Zero memory leaks, zero dangling pointers when pipelines are dismantled.
- * 4. Extensibility:
- *    - A new middleware (e.g., Response Caching or CORS headers) must be addable without touching
- *      existing middlewares or the core handler.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * Ask yourself: How can an object wrap another object of the exact same abstract type,
- * delegating work to it while augmenting behavior before and after the call?
- * How does composition solve the inheritance explosion?
- * ==============================================================================================
+/*
+ * API Gateway Middleware Pipeline
+ *
+ * Requirements:
+ * - Common IHttpHandler interface for both base endpoint handlers and middleware decorators.
+ * - Dynamically compose processing layers (Authentication, Rate Limiting, Observability)
+ *   in any order at runtime without class hierarchy explosion.
+ * - Allow middleware to short-circuit requests (e.g. 401 on failed auth, 429 on rate limit).
+ * - Safe memory management and clean ownership using smart pointers.
  */
 
 #include <iostream>
@@ -192,7 +160,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running API Gateway Pipeline Test Suite <<<\n\n";
+    std::cout << "Running API gateway pipeline tests...\n\n";
 
     // Test Case 1: Bare Handler (No middleware attached)
     {
@@ -313,6 +281,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL API GATEWAY PIPELINE TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll API gateway pipeline tests passed.\n";
     return 0;
 }

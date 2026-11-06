@@ -1,45 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon Data Lake ETL Ingestion Pipeline (Invariant Ingestion Skeleton)
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In AWS Lake Formation / Big Data Pipelines, petabytes of raw data stream in daily from disparate
- * sources: CSV merchant financial settlements, JSON web clickstream events, and Protobuf telemetry.
- * 
- * Regardless of data format, the enterprise data compliance rules dictate an STRICT, UNALTERABLE
- * ingestion sequence:
- *   1. Connect to data source.
- *   2. Extract raw data chunks.
- *   3. Enforce schema compliance (reject corrupted records).
- *   4. Deduplicate records using idempotent key hashing (shared invariant step).
- *   5. Transform & enrich format-specific records.
- *   6. Write optimized columnar Parquet files to S3 data lake.
- *   7. Emit CloudWatch audit log (optional hook).
- * 
- * If engineers write separate ad-hoc scripts for each data format, compliance steps (like deduplication
- * or schema validation) get accidentally skipped or reordered.
- * 
- * The system must define the invariant algorithm skeleton in a base class, deferring only
- * format-specific parsing and transformation steps to subclasses without letting subclasses
- * alter the overall execution sequence.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Template Method Invariance:
- *    - The `runEtlPipeline()` template method defines the fixed algorithm order.
- * 2. Primitive Operations / Hooks:
- *    - Format-specific steps (`extractData()`, `validateSchema()`, `transformData()`) are pure virtual.
- *    - Optional hook (`shouldEmitAuditMetrics()`) with default implementation.
- * 3. Modern C++:
- *    - Non-virtual interface (NVI) idiom: `runEtlPipeline()` is public non-virtual, while
- *      primitive steps are protected virtual methods.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you define the skeleton of an algorithm in an operation, deferring some steps to subclasses,
- * letting subclasses redefine certain steps of an algorithm without changing the algorithm's structure?
- * ==============================================================================================
+/*
+ * Data Lake ETL Ingestion Pipeline
+ *
+ * Requirements:
+ * - Invariant algorithm skeleton defined in base class template method (runEtlPipeline).
+ * - Sequence: connect -> extract -> validate -> deduplicate -> transform -> load -> audit.
+ * - Format-specific steps (extract, validate, transform, load) implemented by subclasses.
+ * - Shared steps (deduplication, audit hook) handled uniformly by base class.
  */
 
 #include <iostream>
@@ -163,7 +129,7 @@ protected:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Data Lake ETL Ingestion (Template Method) Test Suite <<<\n\n";
+    std::cout << "Running data lake ETL ingestion tests...\n\n";
 
     // Test Case 1: CSV Ingestion Pipeline Execution
     {
@@ -179,6 +145,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL TEMPLATE METHOD TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll data lake ETL ingestion tests passed.\n";
     return 0;
 }

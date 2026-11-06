@@ -1,40 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Docs High-Resolution Asset Lazy-Loader & Access Controller
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In Google Docs, a single document can embed dozens of high-resolution architectural diagrams
- * and 4K video clips, each consuming 50MB+ of memory.
- * 
- * Loading all assets eagerly at document open time causes:
- *   1. Massive initial page-load latencies (seconds of freeze).
- *   2. Severe memory bloat for mobile clients who might only read the first page.
- *   3. Security holes: Unauthorized collaborators could inspect raw asset blobs without RBAC checks.
- * 
- * We need a dual-purpose Proxy:
- *   - Virtual Proxy: Lazily instantiates and loads the expensive `HeavyDocumentAsset` ONLY when
- *     `getContent()` is explicitly accessed for the first time.
- *   - Protection Proxy: Enforces Role-Based Access Control (RBAC). If a user lacks "VIEW" permissions,
- *     the asset is never loaded into memory, and access is rejected with an exception.
- *   - Caching Proxy: Ensures the underlying disk/network fetch happens exactly once.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Uniform Interface:
- *    - Both `HeavyDocumentAsset` and `SecureDocumentCacheProxy` implement `IDocumentAsset`.
- * 2. Virtual Proxy (Lazy Initialization):
- *    - The heavy underlying object must NOT be constructed or read from disk until first read.
- * 3. Protection Proxy (Access Gatekeeping):
- *    - If `userRole` does not have read clearance, throw `std::runtime_error("Access Denied")`.
- * 4. Transparent Caching:
- *    - Subsequent accesses must return cached data without repeated disk/network operations.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you provide a surrogate or placeholder for another object to control access to it,
- * delay its expensive creation, or perform security checks transparently?
- * ==============================================================================================
+/*
+ * Document Asset Virtual & Protection Proxy
+ *
+ * Requirements:
+ * - Uniform IDocumentAsset interface for both heavy real assets and proxies.
+ * - Virtual proxy: defer expensive disk/network loading of heavy asset until first getContent() call.
+ * - Protection proxy: verify user permissions and throw std::runtime_error on unauthorized access.
+ * - Caching proxy: avoid redundant disk loads on subsequent reads.
  */
 
 #include <iostream>
@@ -133,7 +104,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Secure Document Proxy Test Suite <<<\n\n";
+    std::cout << "Running secure document proxy tests...\n\n";
 
     HeavyDocumentAsset::resetDiskLoadCount();
 
@@ -179,6 +150,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL PROXY TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll secure document proxy tests passed.\n";
     return 0;
 }

@@ -1,38 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Cloud Infrastructure Deployment & Automated Rollback Engine
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * Google Cloud Deployment Manager automates large-scale infrastructure operations:
- *   - Step 1: Provision Compute Engine VM (`ProvisionVmCommand`)
- *   - Step 2: Allocate & Attach Persistent Disk (`AttachDiskCommand`)
- *   - Step 3: Open Ingress Firewall Rules (`OpenFirewallPortCommand`)
- * 
- * If Step 3 fails due to a network policy violation, the system cannot leave orphaned VMs
- * and detached disks accumulating hourly cloud billing.
- * 
- * The system must encapsulate each operational request as a standalone object with:
- *   1. An `execute()` method to apply the change.
- *   2. An `undo()` method to revert the exact state change in reverse order.
- *   3. A command history queue enabling automated transaction rollbacks.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Command Encapsulation:
- *    - All operations implement `ICloudCommand` with `execute()` and `undo()`.
- * 2. Invoker Pipeline:
- *    - `DeploymentPipeline` maintains an undo history stack.
- *    - If a command in a multi-step sequence fails, the pipeline automatically unwinds and
- *      executes `undo()` on previously succeeded commands in reverse topological order.
- * 3. Modern C++ Ownership:
- *    - Commands passed and stored as `std::unique_ptr<ICloudCommand>`.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you encapsulate a request as an object, thereby letting you parameterize clients
- * with different requests, queue or log requests, and support undoable operations?
- * ==============================================================================================
+/*
+ * Cloud Infrastructure Deployment & Rollback Engine
+ *
+ * Requirements:
+ * - Encapsulate deployment actions (provisioning VMs, opening firewall ports) as command objects
+ *   implementing ICloudCommand (execute and undo).
+ * - Invoker (DeploymentPipeline) maintains an execution history stack.
+ * - Support rolling back commands in reverse order if a deployment step fails.
  */
 
 #include <iostream>
@@ -162,7 +135,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Cloud Deployment Rollback Engine (Command) Test Suite <<<\n\n";
+    std::cout << "Running cloud ops rollback engine tests...\n\n";
 
     CloudComputeManager compute;
     CloudNetworkManager network;
@@ -203,6 +176,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL COMMAND TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll cloud ops rollback engine tests passed.\n";
     return 0;
 }

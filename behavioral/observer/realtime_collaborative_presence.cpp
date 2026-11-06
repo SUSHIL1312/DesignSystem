@@ -1,39 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Docs Real-Time Collaborative Presence & Edit Broker
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In Google Docs, multiple collaborators edit the same document in real time.
- * Whenever a user types a paragraph, moves their cursor, or highlights text:
- *   1. Connected web client sessions must render the remote user's cursor position.
- *   2. An Audit Compliance Service must record document version timestamps.
- *   3. A Spellcheck & AI Grammar Engine must analyze newly inserted text chunks.
- * 
- * Hardcoding notifications inside the core `DocumentEditingEngine` would tightly couple
- * text editing to network sessions, logging, and AI pipelines.
- * 
- * The system requires an event broker where disparate listeners can subscribe and unsubscribe
- * dynamically without the document engine knowing who is listening.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Decoupled Publisher / Subscriber:
- *    - `IDocumentObserver` defines the update contract: `onDocumentEvent(const DocumentEvent&)`.
- *    - `DocumentSessionBroker` coordinates observer registration, unregistration, and broadcasting.
- * 2. Dynamic Lifecycle & Safety:
- *    - Collaborators can join and leave at any instant.
- *    - Unsubscribing must prevent further notifications and avoid dangling references.
- * 3. Event Types & Payload Filtering:
- *    - Events: `CURSOR_MOVED`, `TEXT_INSERTED`, `COMMENT_ADDED`.
- * 4. Thread-Safety:
- *    - Observer list mutations and event broadcasting must be thread-safe.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you define a one-to-many dependency between objects so that when one object changes state,
- * all its dependents are notified and updated automatically?
- * ==============================================================================================
+/*
+ * Real-Time Collaborative Presence & Event Broker
+ *
+ * Requirements:
+ * - Observer interface (IDocumentObserver) and broker (DocumentSessionBroker).
+ * - Decouple document event generation from listeners (UI cursor renderers, audit logs).
+ * - Support dynamic subscription and unsubscription of listeners.
+ * - Thread-safe listener registration and event broadcasting.
  */
 
 #include <iostream>
@@ -148,7 +120,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Google Docs Presence Broker (Observer) Test Suite <<<\n\n";
+    std::cout << "Running collaborative presence broker tests...\n\n";
 
     DocumentSessionBroker broker;
 
@@ -203,6 +175,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL OBSERVER TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll collaborative presence broker tests passed.\n";
     return 0;
 }

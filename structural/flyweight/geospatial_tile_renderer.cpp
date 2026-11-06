@@ -1,41 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Maps Geospatial Landmark & POI Render Cache
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In Google Maps 3D view, a metropolitan area (e.g., Manhattan or Tokyo) displays hundreds of
- * thousands of landmarks, street furniture, and POIs (trees, traffic lights, EV chargers, subway pins).
- * 
- * Every landmark has:
- *   1. Intrinsic State (Invariant & Shared):
- *      - 3D Model Mesh Data, 4K Texture Atlas, POI Category, Icon Glyph.
- *      - Memory footprint: ~2 MB per unique landmark archetype.
- *   2. Extrinsic State (Dynamic & Per-Instance):
- *      - Exact GPS coordinates (latitude, longitude, altitude), orientation angle, label text.
- * 
- * If the client instantiates 50,000 trees eagerly, allocating duplicate mesh and texture data
- * consumes $50,000 \times 2\text{ MB} = 100\text{ GB}$ of RAM, crashing client devices immediately.
- * 
- * The system must share invariant intrinsic state across thousands of map markers, drastically
- * reducing memory consumption while keeping extrinsic positions independent.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Intrinsic / Extrinsic Separation:
- *    - `LandmarkType` flyweight stores heavy invariant assets (texture, mesh, category).
- *    - `PlacedMapMarker` stores extrinsic spatial state (lat, lon, label).
- * 2. Flyweight Factory with Lazy Caching:
- *    - `LandmarkTypeFactory` caches shared flyweights by key ("OakTree", "TrafficSignal").
- *    - If requested type already exists, return the cached instance; do NOT reallocate.
- * 3. Modern C++ Shared Semantics:
- *    - Manage shared flyweights safely via `std::shared_ptr<const LandmarkType>`.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you use sharing to support large numbers of fine-grained objects efficiently?
- * What data belongs inside the shared object, and what data must be supplied from the outside?
- * ==============================================================================================
+/*
+ * Geospatial Landmark & POI Render Cache
+ *
+ * Requirements:
+ * - Separate intrinsic state (shared 3D mesh, texture atlas, category) from extrinsic state
+ *   (GPS latitude, longitude, label).
+ * - LandmarkTypeFactory caches and dispenses shared LandmarkType flyweights.
+ * - Map markers store a reference/pointer to the shared flyweight to minimize memory consumption.
  */
 
 #include <iostream>
@@ -123,7 +93,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Google Maps Landmark Renderer (Flyweight) Test Suite <<<\n\n";
+    std::cout << "Running geospatial landmark renderer tests...\n\n";
 
     LandmarkTypeFactory factory;
 
@@ -171,6 +141,6 @@ int main() {
         std::cout << "PASSED (10,000 markers cleanly sharing 3 archetypes)\n";
     }
 
-    std::cout << "\n🎉 ALL FLYWEIGHT TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll geospatial landmark renderer tests passed.\n";
     return 0;
 }

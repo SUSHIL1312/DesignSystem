@@ -1,35 +1,13 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google Meet Conference Session Coordinator (Decoupling Mesh Comms)
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In a Google Meet conference session, diverse components interact during a video call:
- *   - Video Participants (`UserParticipant`): Can join, leave, send chat messages, or request screen-share.
- *   - Screen Share Lock (`ScreenShareManager`): Allows only one presenter at a time.
- *   - Recording Bot (`ComplianceRecordingBot`): Audits audio/video and announces recording to all callers.
- *   - Chat Broadcast Stream: Delivers public and private chat messages.
- * 
- * If every participant held direct references to all other participants, the screen share lock,
- * and the recording bot, we would create a chaotic $O(N^2)$ communication mesh.
- * 
- * The system requires a central Mediator (`IMeetingRoomMediator`) that encapsulates how the set
- * of meeting objects interact. Participants communicate ONLY with the mediator.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Centralized Coordination:
- *    - Colleague classes hold a reference to `IMeetingRoomMediator`.
- *    - All events (`USER_JOINED`, `SEND_CHAT`, `REQUEST_SCREEN_SHARE`, `START_RECORDING`) route through the mediator.
- * 2. Invariant Enforcement:
- *    - Screen sharing is mutually exclusive (if Bob requests screen share while Alice is presenting, request is denied).
- *    - When the recording bot activates, all active participants receive a privacy warning.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you define an object that encapsulates how a set of objects interact, promoting loose
- * coupling by keeping objects from referring to each other explicitly and letting you vary their interaction independently?
- * ==============================================================================================
+/*
+ * Video Conference Room Session Mediator
+ *
+ * Requirements:
+ * - Central mediator (IMeetingRoomMediator) coordinates interactions among colleagues
+ *   (participants, screen sharing, recording bot).
+ * - Colleagues communicate only through the mediator.
+ * - Enforce coordination invariants:
+ *   - Mutually exclusive screen sharing (one presenter at a time).
+ *   - Broadcast recording alerts to all active participants when recording starts.
  */
 
 #include <iostream>
@@ -163,7 +141,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Google Meet Room (Mediator) Test Suite <<<\n\n";
+    std::cout << "Running video conferencing mediator tests...\n\n";
 
     auto room = std::make_unique<GoogleMeetRoomMediator>();
 
@@ -217,6 +195,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL MEDIATOR TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll video conferencing mediator tests passed.\n";
     return 0;
 }

@@ -1,36 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Google / Meta Social Graph Bounded BFS Traversal Iterator
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * At Meta / Google, the social graph connects billions of profiles. Features like
- * "People You May Know" and "Shared Circles" traverse a user's network layer by layer:
- *   - Level 0: Self
- *   - Level 1: Immediate friends (1st degree)
- *   - Level 2: Friends of friends (2nd degree)
- * 
- * Exposing the raw adjacency list or internal storage partitions directly to caller algorithms
- * violates encapsulation, prevents concurrent read-isolation, and risks infinite loops on cyclic graphs.
- * 
- * The system requires a clean, standard Iterator that yields profiles in Breadth-First Search (BFS)
- * order up to a specified maximum hop depth, keeping visited sets and queue traversal completely encapsulated.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Encapsulated Traversal:
- *    - `IIterator<T>` contract: `hasNext()` and `next()`.
- *    - Graph internals (adjacency lists, visited hash sets, BFS queue) must be completely private.
- * 2. Cyclic Graph Resilience:
- *    - Handles cycles without infinite loops or duplicate yields.
- * 3. Bounded Depth:
- *    - Traverses only up to `maxDepth` hops from the source profile.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you provide a way to access the elements of an aggregate object sequentially
- * without exposing its underlying representation?
- * ==============================================================================================
+/*
+ * Social Graph BFS Traversal Iterator
+ *
+ * Requirements:
+ * - Encapsulate graph traversal behind a generic IIterator<T> interface (hasNext, next).
+ * - Traverse graph connections level-by-level (Breadth-First Search) up to maxDepth hops.
+ * - Handle cycles correctly without duplicate visits or infinite loops.
+ * - Graph internal storage (adjacency list, visited set) remains private.
  */
 
 #include <iostream>
@@ -139,7 +114,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Social Graph BFS (Iterator) Test Suite <<<\n\n";
+    std::cout << "Running social graph BFS iterator tests...\n\n";
 
     // Setup graph:
     // Alice (root) -> Bob, Charlie
@@ -190,6 +165,6 @@ int main() {
         std::cout << "PASSED (Cycle handled cleanly without duplicates)\n";
     }
 
-    std::cout << "\n🎉 ALL ITERATOR TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll social graph BFS iterator tests passed.\n";
     return 0;
 }

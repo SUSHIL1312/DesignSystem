@@ -1,39 +1,11 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon Prime 1-Click Buy Orchestrator (Subsystem Simplification)
- * Category: Structural Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * When an Amazon Prime customer taps "Buy Now with 1-Click", they expect an instantaneous,
- * frictionless purchase. Behind the scenes, five independent backend microservices must interact:
- *   1. `InventoryService`: Validates stock, locks item, and decrements warehouse inventory.
- *   2. `TaxCalculationService`: Evaluates regional sales tax based on customer delivery address.
- *   3. `PaymentBillingService`: Charges the customer's default 1-Click credit card.
- *   4. `ShippingLogisticsService`: Creates warehouse pick-list and assigns courier tracking ID.
- *   5. `NotificationService`: Dispatches push/email confirmation with delivery tracking.
- * 
- * Forcing mobile apps or web frontends to coordinate these 5 subsystems creates tight coupling,
- * security vulnerabilities, high network latency over cellular connections, and broken state
- * if a network packet drops halfway through.
- * 
- * The system requires a clean, high-level Facade that masks subsystem complexity behind
- * a single unified call: `checkout(customerId, itemId, quantity)`.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Unified Simple Interface:
- *    - Mask subsystem initialization, coordination sequence, and rollbacks behind `OneClickCheckoutFacade`.
- * 2. Loose Coupling:
- *    - Subsystems remain independent and can still be used directly by advanced fulfillment workflows.
- * 3. Transactional Fallback / Short-Circuiting:
- *    - If inventory is unavailable or payment fails, abort downstream fulfillment steps and return
- *      a clear failure result.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you provide a unified high-level interface to a set of interfaces in a subsystem,
- * making the subsystem easier to use without hiding the low-level classes from advanced clients?
- * ==============================================================================================
+/*
+ * One-Click Checkout Subsystem Facade
+ *
+ * Requirements:
+ * - Provide a simplified, high-level interface for order purchases.
+ * - Coordinate inventory reservation, tax calculation, payment billing, and shipping.
+ * - Short-circuit on failure (e.g. out of stock, payment declined) and return descriptive status.
+ * - Subsystems remain decoupled and accessible for advanced fulfillment workflows.
  */
 
 #include <iostream>
@@ -129,7 +101,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running 1-Click Checkout Facade Test Suite <<<\n\n";
+    std::cout << "Running one-click checkout facade tests...\n\n";
 
     OneClickCheckoutFacade checkoutEngine;
 
@@ -182,6 +154,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL FACADE TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll one-click checkout facade tests passed.\n";
     return 0;
 }

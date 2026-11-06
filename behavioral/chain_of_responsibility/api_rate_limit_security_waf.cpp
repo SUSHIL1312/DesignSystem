@@ -1,37 +1,13 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: AWS WAF (Web Application Firewall) & API Filter Chain
- * Category: Behavioral Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * AWS WAF inspects millions of incoming web requests per second. Each request must pass through
- * a configurable chain of security filters before reaching backend services:
- *   1. `IpBlacklistFilter`: Blocks known malicious IP addresses immediately.
- *   2. `RateLimitFilter`: Rejects IPs that exceed safe per-minute velocity thresholds.
- *   3. `SqlInjectionFilter`: Scans query strings and body for SQL injection signatures (`DROP TABLE`, `UNION SELECT`).
- *   4. `AuthenticationFilter`: Validates HMAC or Bearer auth token headers.
- * 
- * Invariants:
- *   - Any filter in the chain can decide to short-circuit and terminate the request immediately
- *     (returning a security violation result).
- *   - If a filter passes, it forwards the request to the `next` filter in the chain.
- *   - If the request reaches the end of the chain without violation, it is approved.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Chain Composition:
- *    - Handlers implement `ISecurityFilter` and maintain a reference/pointer to `next_`.
- *    - Fluent chain linking (e.g. `filterA->setNext(filterB)->setNext(filterC)`).
- * 2. Short-Circuiting:
- *    - Execution stops on the first failed check without running subsequent expensive checks.
- * 3. Extensibility:
- *    - New filters (e.g., Geo-IP blocking, CSRF check) can be inserted anywhere in the chain.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you avoid coupling the sender of a request to its receiver by giving more than one
- * object a chance to handle the request? Chain the receiving objects and pass the request along the chain.
- * ==============================================================================================
+/*
+ * Web Application Firewall (WAF) Request Filter Chain
+ *
+ * Requirements:
+ * - Sequential security filters linked in a chain (ISecurityFilter).
+ * - Concrete filters:
+ *   - IpBlacklistFilter: rejects known bad IPs.
+ *   - RateLimitFilter: checks requests per second against threshold.
+ *   - SqlInjectionFilter: inspects payload for SQL injection signatures.
+ * - Early termination (short-circuit) on violation; forward to next filter on success.
  */
 
 #include <iostream>
@@ -150,7 +126,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running AWS WAF Filter (Chain of Responsibility) Test Suite <<<\n\n";
+    std::cout << "Running WAF filter chain tests...\n\n";
 
     // Setup Chain: IP Blacklist -> Rate Limit (max 100) -> SQL Injection
     auto ipFilter = std::make_shared<IpBlacklistFilter>();
@@ -226,6 +202,6 @@ int main() {
         std::cout << "PASSED\n";
     }
 
-    std::cout << "\n🎉 ALL CHAIN OF RESPONSIBILITY TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll WAF filter chain tests passed.\n";
     return 0;
 }

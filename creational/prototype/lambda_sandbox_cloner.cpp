@@ -1,39 +1,12 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: AWS Lambda / Firecracker MicroVM Execution Sandbox Cloner (SnapStart)
- * Category: Creational Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In AWS Lambda / Google Cloud Functions, spinning up an execution container from scratch
- * ("Cold Start") incurs a 500ms - 2s penalty to parse configs, load libraries, and warm runtimes.
- * 
- * To eliminate cold starts, modern serverless engines initialize a pre-warmed "Golden Sandbox"
- * once, then clone it in under 5ms ("SnapStart").
- * 
- * A shallow copy causes catastrophic bugs: two client executions would mutate the same
- * memory buffers, leak credentials across customer invocations, or share process IDs.
- * The system requires:
- *   1. Polymorphic deep copying of sandboxes via a unified `clone()` interface.
- *   2. Independent mutation: Modifying environment variables, PID, or memory state on a clone
- *      must NEVER leak into or alter the template prototype or sibling clones.
- *   3. A `SandboxRegistry` caching pre-warmed prototypes by runtime ID ("python3.11", "nodejs20").
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Deep Copy Semantics:
- *    - All nested structures (memory blocks, custom env variables) must be deeply cloned.
- * 2. Modern C++ Virtual Clone Idiom:
- *    - Implement `virtual std::unique_ptr<ExecutionSandbox> clone() const = 0;`.
- * 3. Covariant Returns / Unique Pointer Ownership:
- *    - Clean ownership transfer without memory leaks.
- * 4. Isolation Guarantee:
- *    - Mutating a clone must leave the prototype template intact.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How can you specify the kinds of objects to create using a prototypical instance,
- * and create new objects by copying this prototype without coupling to its concrete class?
- * ==============================================================================================
+/*
+ * Serverless Sandbox Cloner
+ *
+ * Requirements:
+ * - Clone pre-warmed execution sandboxes to reduce startup overhead.
+ * - Deep copy semantics: modifying environment variables, logs, or memory on a clone
+ *   must never affect the original prototype or other clones.
+ * - Virtual clone method returning std::unique_ptr<ExecutionSandbox>.
+ * - Prototype registry to manage and dispense sandboxes by runtime type.
  */
 
 #include <iostream>
@@ -142,7 +115,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Lambda Sandbox Cloner (Prototype) Test Suite <<<\n\n";
+    std::cout << "Running sandbox cloner tests...\n\n";
 
     SandboxPrototypeRegistry registry;
     registry.registerPrototype("python-ml", std::make_unique<PythonMLSandbox>());
@@ -184,6 +157,6 @@ int main() {
         std::cout << "PASSED (Zero cross-tenant credential leakage)\n";
     }
 
-    std::cout << "\n🎉 ALL PROTOTYPE TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll sandbox cloner tests passed.\n";
     return 0;
 }

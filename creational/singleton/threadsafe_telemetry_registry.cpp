@@ -1,38 +1,12 @@
-/**
- * ==============================================================================================
- * PROBLEM STATEMENT: Amazon CloudWatch / Google Monarch Telemetry Registry
- * Category: Creational Pattern
- * Target Level: FAANG L5/L6 (Senior SWE / Staff Candidate)
- * ==============================================================================================
- * 
- * SCENARIO:
- * In high-performance backend microservices at Google or Amazon, a unified, process-wide
- * Telemetry Registry aggregates operational metrics (HTTP request counts, DB error rates, latencies).
- * 
- * Multiple concurrent worker threads simultaneously record metrics. Creating multiple registry instances
- * would cause fragmented counters, incorrect aggregation, and memory bloat.
- * 
- * The system requires:
- *   1. Guaranteed single instance per process lifecycle.
- *   2. Thread-safe, lazy initialization without data races.
- *   3. Prevention of accidental cloning, copying, or assignment.
- *   4. Thread-safe metric updates under intense concurrent load.
- * 
- * REQUIREMENTS & CONSTRAINTS:
- * 1. Thread-Safe Lazy Initialization:
- *    - Must leverage Modern C++ (C++11/17/20 static local variable initialization guarantee -
- *      "Meyers' Singleton" or `std::call_once`).
- * 2. Uniqueness Guarantees:
- *    - Private constructors; deleted copy constructor, move constructor, and assignment operators.
- * 3. Thread-Safe Data Operations:
- *    - Recording counters and reading aggregated metrics across dozens of threads must be safe from race conditions.
- * 4. Testability / Reset Support:
- *    - Provide a safe `resetForTesting()` hook so automated test suites can reset metrics between runs.
- * 
- * SUBTLE ARCHITECTURAL HINT:
- * How does Modern C++ guarantee thread-safe static initialization at the language/runtime level?
- * What copy/move operations must be explicitly deleted to prevent duplicate instances?
- * ==============================================================================================
+/*
+ * Thread-Safe Telemetry Registry
+ *
+ * Requirements:
+ * - Centralized metrics registry aggregating application counters across threads.
+ * - Exactly one instance per process with thread-safe lazy initialization.
+ * - Explicitly deleted copy and move constructors and assignment operators.
+ * - Thread-safe counter updates and lookups under concurrent access.
+ * - Reset method for isolated unit testing.
  */
 
 #include <iostream>
@@ -99,7 +73,7 @@ public:
 // ----------------------------------------------------------------------------------------------
 
 int main() {
-    std::cout << ">>> Running Thread-Safe Telemetry Registry Test Suite <<<\n\n";
+    std::cout << "Running thread-safe telemetry registry tests...\n\n";
 
     // Test Case 1: Identity & Singleton Verification
     {
@@ -154,6 +128,6 @@ int main() {
         std::cout << "PASSED (" << actual << " increments without race conditions)\n";
     }
 
-    std::cout << "\n🎉 ALL SINGLETON TESTS COMPLETED SUCCESSFULLY!\n";
+    std::cout << "\nAll thread-safe telemetry registry tests passed.\n";
     return 0;
 }
